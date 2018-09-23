@@ -31,7 +31,9 @@ def CheckPrice(sc):
 		final_split = str(near_split[1]).replace("€", "")
 
 		if logging == True:
+			f = open('prices.log','a')
 			f.write(time.strftime("%d-%m-%Y %H:%M", time.localtime())+'|'+pulsedmedia+u+'|'+final_split+'\n')
+			f.close()
 
 		if float(final_split) <= max_price and float(final_split) >= min_price:
 			print("Current price of " + final_split + "€ is less than the maximum price of " + str(max_price) + "€ and more than the minimum price of " + str(min_price) + "€. Sending an email...")
@@ -50,9 +52,6 @@ def email( price ):
 	msg = msg_template
 	server.sendmail(config['EMAIL']['Email'], config['EMAIL']['Email'], msg)
 	server.quit()
-
-if logging == True:
-	f = open('prices.log','a')
 
 s.enter(1, 1, CheckPrice, (s,))
 s.run()
