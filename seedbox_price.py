@@ -23,23 +23,20 @@ def CheckPrice(sc):
 	for x in price_lists:
 		fixed_prices.append(x.replace('&amp;', '&'))
 		
-	price_locations = []
-	for y in fixed_prices:
-		price_locations.append(pulsedmedia + y)
-
-	for u in price_locations:
-		page = urllib.request.urlopen(u)
+	for u in fixed_prices:
+		page = urllib.request.urlopen(pulsedmedia + u)
 		soup = BeautifulSoup(page, 'html.parser')
 		near_split = str(soup).split("'")
 		final_split = str(near_split[1]).replace("€", "")
 
 		if float(final_split) <= max_price and float(final_split) >= min_price:
-			print("Current price of " + final_split + "€ is less or equal to requested price of " + str(max_price) + "€. Sending an email and waiting 5 minutes before the next check")
+			print("Current price of " + final_split + "€ is less than the maximum price of " + str(max_price) + "€ and more than the minimum price of " + str(min_price) + "€. Sending an email...")
 			email(final_split)
-			s.enter(300, 1, CheckPrice, (sc,))
 		else:
-			print("Current price of " + final_split + "€ is more than " + str(max_price) + "€. Waiting for better price, next check in a minute...")
-			s.enter(60, 1, CheckPrice, (sc,))
+			print("Current price of " + final_split + "€ does not match the current requests price range, next check in a minute...")
+
+	s.enter(60, 1, CheckPrice, (sc,))
+
 
 def email( price ):
 	server = smtplib.SMTP(config['EMAIL']['Server'], 587)
