@@ -14,6 +14,7 @@ s = sched.scheduler(time.time, time.sleep)
 def CheckPrice(sc):
 	prices_page = urllib.request.urlopen(auctions_page)
 	prices_soup = BeautifulSoup(prices_page, 'html.parser')
+	f = open('prices.log','a')
 
 	price_script = prices_soup.find_all('script', attrs={'language':'javascript'})
 	script_split = str(price_script).split('"')
@@ -28,14 +29,16 @@ def CheckPrice(sc):
 		soup = BeautifulSoup(page, 'html.parser')
 		near_split = str(soup).split("'")
 		final_split = str(near_split[1]).replace("€", "")
+		f.write(time.strftime("%d-%m-%Y %H:%M", time.localtime())+'|'+pulsedmedia+u+'|'+final_split+'\n')
 
 		if float(final_split) <= max_price and float(final_split) >= min_price:
 			print("Current price of " + final_split + "€ is less than the maximum price of " + str(max_price) + "€ and more than the minimum price of " + str(min_price) + "€. Sending an email...")
-			email(final_split)
+			#email(final_split)
 		else:
 			print("Current price of " + final_split + "€ does not match the current requests price range, next check in a minute...")
 
 	s.enter(60, 1, CheckPrice, (sc,))
+	f.close()
 
 
 def email( price ):
