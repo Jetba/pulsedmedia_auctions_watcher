@@ -12,9 +12,10 @@ pulsedmedia = 'http://pulsedmedia.com'
 auctions_page = 'http://pulsedmedia.com/seedbox-auctions.php'
 s = sched.scheduler(time.time, time.sleep)
 
-f = open('prices.csv','w')
-f.write('Date,OfferLink,Price\n')
-f.close()
+if logging == True:
+	f = open('prices.csv','w')
+	f.write('Date,OfferLink,Price\n')
+	f.close()
 
 def CheckPrice(sc):
 	prices_page = urllib.request.urlopen(auctions_page)
