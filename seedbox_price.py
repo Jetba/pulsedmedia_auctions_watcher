@@ -33,7 +33,7 @@ def CheckPrice(sc):
 		page = urllib.request.urlopen(pulsedmedia + u)
 		soup = BeautifulSoup(page, 'html.parser')
 		near_split = str(soup).split("'")
-		final_split = str(near_split[1]).replace("€", "")
+		final_split = re.sub('[^\d\.]', '', str(near_split[1]))
 
 		if logging == True:
 			f = open('prices.csv','a')
